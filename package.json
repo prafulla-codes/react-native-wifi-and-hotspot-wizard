@@ -1,0 +1,17 @@
+{
+  "name": "react-native-wifi-and-hotspot-wizard",
+  "version": "1.0.0",
+  "description": "Configure essential wifi and hotspot settings easily.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": "Prafulla Raichurkar",
+  "license": "",
+  "peerDependencies": {
+    "react-native": "^0.41.2"
+  }
+}
