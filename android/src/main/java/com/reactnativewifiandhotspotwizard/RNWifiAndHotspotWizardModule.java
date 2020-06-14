@@ -34,11 +34,10 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 
   private final ReactApplicationContext reactContext;
 
- 
-
   @ReactMethod
   public void greet(Promise promise){
-    promise.resolve("Hello, I am Prafulla");
+    String greetings = "Hello I am Prafulla";
+    promise.resolve(greetings);
   }
 
  
