@@ -34,11 +34,39 @@
   	```
 
 
-## Usage
-```javascript
-import RNWifiAndHotspotWizard from 'react-native-wifi-and-hotspot-wizard';
+# Usage
 
-// TODO: What to do with the module?
-RNWifiAndHotspotWizard;
+The Wizard Will help you do all the necessary configurations
+```javascript
+import {Wizard} from 'react-native-wifi-and-hotspot-wizard';
 ```
-  
+
+## Turn On Wifi
+
+Enables the Device Wifi 
+```javascript
+Wizard.turnOnWifi();
+```
+
+Permissions Required
+
+Make sure to add this in your **AndroidManifest.xml** file
+```xml
+   <uses-permission
+          android:required="true"
+          android:name="android.permission.CHANGE_WIFI_STATE"/>
+```
+## Turn Off Wifi
+Disables the Device Wifi 
+```javascript
+Wizard.turnOffWifi();
+```
+
+Permissions Required
+
+Make sure to add this in your **AndroidManifest.xml** file
+```xml
+   <uses-permission
+          android:required="true"
+          android:name="android.permission.CHANGE_WIFI_STATE"/>
+```

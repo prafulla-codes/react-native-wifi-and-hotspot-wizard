@@ -31,19 +31,28 @@ import java.util.List;
 
 import javax.security.auth.callback.Callback;
 public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
-
+  WifiManager wifi;
   private final ReactApplicationContext reactContext;
 
-  @ReactMethod
-  public void greet(Promise promise){
-    String greetings = "Hello I am Prafulla";
-    promise.resolve(greetings);
+
+
+  @ReactMethod 
+  public void turnOnWifi(){
+    wifi.setWifiEnabled(true);
   }
+  @ReactMethod 
+  public void turnOffWifi(){
+    wifi.setWifiEnabled(false);
+  }
+
+
 
  
   public RNWifiAndHotspotWizardModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
+    wifi = (WifiManager)reactContext.getSystemService(Context.WIFI_SERVICE);
+
   }
 
   @Override
