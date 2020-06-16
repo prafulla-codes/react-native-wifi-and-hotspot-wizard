@@ -3,7 +3,9 @@
 
 ## Introduction
 
-⚙️ Configure Wifi and Hotspot Settings both using single library.
+⚙️ Configure **Wifi and Hotspot** Settings both using single library. 
+
+This library also **automatically deals with run-time permission management**.
 
 **Note** - This Library is now under development and supports only **Android** as of now.
 
@@ -36,16 +38,24 @@
 
 # Usage
 
-The Wizard Will help you do all the necessary configurations
+Wizards Will help you do all the necessary configurations
+
+##  Wizards
+1. ###  **WifiWizard** (for Wifi Related Configurations)
+2. ### **HotspotWizard** (for Hotspot Related Configurations)
+
+## Importing Wizards
 ```javascript
-import {Wizard} from 'react-native-wifi-and-hotspot-wizard';
+import {WifiWizard,HotspotWizard} from 'react-native-wifi-and-hotspot-wizard';
 ```
+
+# WifiWizard Usage
 
 ## Turn On Wifi
 
 Enables the Device Wifi 
 ```javascript
-Wizard.turnOnWifi();
+WifiWizard.turnOnWifi();
 ```
 
 Permissions Required
@@ -59,7 +69,7 @@ Make sure to add this in your **AndroidManifest.xml** file
 ## Turn Off Wifi
 Disables the Device Wifi 
 ```javascript
-Wizard.turnOffWifi();
+WifiWizard.turnOffWifi();
 ```
 
 Permissions Required
@@ -69,4 +79,35 @@ Make sure to add this in your **AndroidManifest.xml** file
    <uses-permission
           android:required="true"
           android:name="android.permission.CHANGE_WIFI_STATE"/>
+```
+
+## Check Wifi State
+
+checks the state of wifi and returns status (boolean)
+Disables the Device Wifi 
+
+```javascript
+WifiWizard.isWifiEnabled();
+```
+
+
+
+## Get Nearby Devices
+
+Scans for nearby devices and returns the list as JSON String
+```javascript
+WifiWizard.getNearbyDevices().then(data=>{
+  let devices = JSON.parse(devices);
+  console.log(devices);
+});
+```
+
+Permissions Required
+
+
+Make sure to add this in your **AndroidManifest.xml** file
+```xml
+   <uses-permission
+          android:required="true"
+          android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 ```
