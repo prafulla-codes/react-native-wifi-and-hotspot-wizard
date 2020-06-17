@@ -11,10 +11,11 @@ class WifiWizard {
 }
 
 class HotspotWizard {
-    static turnOnHotspot = () =>{
+    static turnOnHotspot = (SSID,Password) =>{
         WifiWizard.turnOffWifi();
-        return RNWifiAndHotspotWizard.turnOnHotspot();
+        return RNWifiAndHotspotWizard.turnOnHotspot(SSID,Password);
     } 
+    static turnOffHotspot = () => RNWifiAndHotspotWizard.turnOffHotspot();
 }
 export {
     WifiWizard,

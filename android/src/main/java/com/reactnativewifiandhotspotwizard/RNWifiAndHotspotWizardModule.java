@@ -26,6 +26,7 @@ import android.widget.Toast;
 import sun.security.ec.point.ProjectivePoint.Mutable;
 import android.os.Build;
 import java.net.Inet4Address;
+import android.net.wifi.WifiManager.LocalOnlyHotspotReservation;
 import androidx.core.app.ActivityCompat;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -42,6 +43,8 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
   final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 1;
   final int PERMISSIONS_REQUEST_HOTSPOT = 23;
   final int PERMISSIONS_WRITE_SETTINGS=25;
+  private WifiConfiguration mWifiConfiguration;
+  private Object mReservation;
   @ReactMethod
   public void turnOnWifi() {
     wifi.setWifiEnabled(true);
@@ -65,14 +68,14 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 
 	}
   @ReactMethod
-  public void turnOnHotspot(Promise promise){
+  public void turnOnHotspot(String SSID,String Password,Promise promise){
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat
     .checkSelfPermission(reactContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
     || ContextCompat.checkSelfPermission(reactContext, Manifest.permission.CHANGE_WIFI_STATE) != PackageManager.PERMISSION_GRANTED
     || ContextCompat.checkSelfPermission(reactContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) { 
       ActivityCompat.requestPermissions(getCurrentActivity(),new String[] { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CHANGE_WIFI_STATE,Manifest.permission.ACCESS_COARSE_LOCATION},
       PERMISSIONS_REQUEST_HOTSPOT);
-      turnOnHotspot(promise);
+      turnOnHotspot(SSID,Password,promise);
     }
     else if(!Settings.System.canWrite(getReactApplicationContext()))
     {
@@ -81,39 +84,116 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
     else
     {
       if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+        try{
+          Method getWifiApConfiguration = wifi.getClass().getDeclaredMethod("getWifiApConfiguration");
+          Object result = getWifiApConfiguration.invoke(wifi);
+          if(result != null){
+            mWifiConfiguration = (WifiConfiguration) result;
+          }
+        }catch(Exception e){
+          promise.reject(e.getMessage());
+        }
         WifiConfiguration  myConfig =  new WifiConfiguration();
-        myConfig.SSID="PrafullaR";
-        myConfig.preSharedKey="Hello World";
+        myConfig.SSID=SSID;
+        myConfig.preSharedKey=Password;
         Boolean bool = true;
         Object result;
         try{
           Method setWifiApEnabledMethod = WifiManager.class.getMethod("setWifiApEnabled",
           WifiConfiguration.class, boolean.class);
           result = (Boolean) setWifiApEnabledMethod.invoke(wifi,myConfig,bool);
-          promise.resolve("Hotspot Started");
+          JSONObject obj = new JSONObject();
+          obj.put("status","success");
+          promise.resolve(obj.toString());
         }catch(Exception e){
           promise.reject(e.toString());
         }
       }
       else
       {
-        wifi.startLocalOnlyHotspot(new LocalOnlyHotspotCallback(promise),null);
+        wifi.startLocalOnlyHotspot(new LocalOnlyHotspotCallback(promise,SSID,Password),null);
       }
-  
     }
- 
   }
-
+  @ReactMethod
+  public void turnOffHotspot(Promise promise){
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat
+    .checkSelfPermission(reactContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+    || ContextCompat.checkSelfPermission(reactContext, Manifest.permission.CHANGE_WIFI_STATE) != PackageManager.PERMISSION_GRANTED
+    || ContextCompat.checkSelfPermission(reactContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) { 
+      ActivityCompat.requestPermissions(getCurrentActivity(),new String[] { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CHANGE_WIFI_STATE,Manifest.permission.ACCESS_COARSE_LOCATION},
+      PERMISSIONS_REQUEST_HOTSPOT);
+      turnOffHotspot(promise);
+    }
+    else if(!Settings.System.canWrite(getReactApplicationContext()))
+    {
+      writePermission();
+    }
+    else
+    {
+      if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+        WifiConfiguration  myConfig =  mWifiConfiguration;
+        Boolean bool = false;
+        Object restoreConfigResult,result;
+        try{
+          Method setWifiApEnabledMethod = WifiManager.class.getMethod("setWifiApEnabled",
+          WifiConfiguration.class, boolean.class);
+          Method setWifiApConfiguration = wifi.getClass().getMethod("setWifiApConfiguration",WifiConfiguration.class);
+          restoreConfigResult = setWifiApConfiguration.invoke(wifi,myConfig);
+          result = (Boolean) setWifiApEnabledMethod.invoke(wifi,myConfig,bool);
+          JSONObject obj = new JSONObject();
+          obj.put("status","success");
+          promise.resolve(obj.toString());
+        }catch(Exception e){
+          promise.reject(e.toString());
+        }
+      }
+      else
+      {
+        if(mReservation!=null){
+          WifiManager.LocalOnlyHotspotReservation mReserve = (WifiManager.LocalOnlyHotspotReservation) mReservation;
+          mReserve.close();
+          try{
+            JSONObject obj = new JSONObject();
+            obj.put("status","success");
+            promise.resolve(obj.toString());
+          }catch(Exception e){
+            promise.reject(e.getMessage());
+          }
+        }
+        else
+        {
+          promise.reject("Hotspot Not Active");
+        }
+      }
+    }
+  }
 
   public class LocalOnlyHotspotCallback extends WifiManager.LocalOnlyHotspotCallback{
     Promise promise;    
-    LocalOnlyHotspotCallback(Promise promise){
+    String SSID,Password;
+    WifiConfiguration config;
+    LocalOnlyHotspotCallback(Promise promise,String SSID,String Password){
       this.promise = promise;
+      this.SSID = SSID;
+      this.Password = Password;
     }
     @Override
     public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation)
     {
-      promise.resolve("hotspot started");
+      mReservation = (WifiManager.LocalOnlyHotspotReservation) reservation;
+      config = reservation.getWifiConfiguration();
+      try{
+        JSONObject obj  = new JSONObject();
+        obj.put("status","auth");
+        obj.put("SSID",config.SSID);
+        obj.put("password",config.preSharedKey);
+        promise.resolve(obj.toString());
+      }catch(Exception e)
+      {
+        promise.reject(e.getMessage());
+      }
+
     }
     @Override
     public void onFailed(int reason){
@@ -140,10 +220,6 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 
   }
 
-  @ReactMethod
-  public void getNearbyDevices(Promise promise) {
-
-  }
 
   public RNWifiAndHotspotWizardModule(ReactApplicationContext reactContext) {
     super(reactContext);
