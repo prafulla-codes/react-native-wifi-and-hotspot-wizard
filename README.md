@@ -11,7 +11,7 @@ This library also **automatically deals with run-time permission management**.
 
 ## Getting started
 
-`$ npm install https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard --save`
+`$ npm i react-native-wifi-and-hotspot-wizard`
 
 ### Mostly automatic installation
 
