@@ -1,5 +1,6 @@
 
 ![React Native Wifi And Hotspot Wizard](https://res.cloudinary.com/prafulla98/image/upload/v1592410787/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Frame_1banner_bkhwf3.png?)
+# React Native Wifi & Hotspot Wizard
 
 ## Introduction
 
@@ -11,7 +12,7 @@ This library also **automatically deals with run-time permission management**.
 
 ## Getting started
 
-`$ npm i react-native-wifi-and-hotspot-wizard`
+`$ npm install https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard --save`
 
 ### Mostly automatic installation
 
@@ -41,8 +42,8 @@ This library also **automatically deals with run-time permission management**.
 Wizards Will help you do all the necessary configurations
 
 ##  Wizards
-1. ###  **WifiWizard** (for Wifi Related Configurations)
-2. ### **HotspotWizard** (for Hotspot Related Configurations)
+1. **WifiWizard** (for Wifi Related Configurations)
+2. **HotspotWizard** (for Hotspot Related Configurations)
 
 ## Importing Wizards
 ```javascript
@@ -51,63 +52,254 @@ import {WifiWizard,HotspotWizard} from 'react-native-wifi-and-hotspot-wizard';
 
 # WifiWizard Usage
 
-## Turn On Wifi
+## turnOnWifi()
 
 Enables the Device Wifi 
 ```javascript
 WifiWizard.turnOnWifi();
 ```
 
-Permissions Required
 
-Make sure to add this in your **AndroidManifest.xml** file
+**REQUIRED PERMISSIONS**
+
+Make sure your **AndroidManifest.xml** file has the following permissions.
+
 ```xml
    <uses-permission
           android:required="true"
           android:name="android.permission.CHANGE_WIFI_STATE"/>
 ```
-## Turn Off Wifi
+## turnOffWifi()
 Disables the Device Wifi 
 ```javascript
 WifiWizard.turnOffWifi();
 ```
 
-Permissions Required
+**REQUIRED PERMISSIONS**
 
-Make sure to add this in your **AndroidManifest.xml** file
+Make sure your **AndroidManifest.xml** file has the following permissions.
 ```xml
    <uses-permission
           android:required="true"
           android:name="android.permission.CHANGE_WIFI_STATE"/>
 ```
 
-## Check Wifi State
+## isWifiEnabled()
 
-checks the state of wifi and returns status (boolean)
-Disables the Device Wifi 
+Checks the state of the Wifi and Returns the status
 
 ```javascript
-WifiWizard.isWifiEnabled();
+WifiWizard.isWifiEnabled().then(status=>{
+  console.log(status)
+});
+```
+
+**OUTPUT**
+
+Return type : **Boolean**
+
+```javascript
+>>> true 
 ```
 
 
 
-## Get Nearby Devices
+## getNearbyNetworks()
 
-Scans for nearby devices and returns the list as JSON String
+Scans for nearby networks and returns a JSON stringified list of the results.
 ```javascript
-WifiWizard.getNearbyDevices().then(data=>{
-  let devices = JSON.parse(devices);
+WifiWizard.getNearbyNetworks().then(data=>{
+  let devices = JSON.parse(data);
   console.log(devices);
 });
 ```
 
-Permissions Required
+**REQUIRED PERMISSIONS**
 
-
-Make sure to add this in your **AndroidManifest.xml** file
+Make sure your **AndroidManifest.xml** file has the following permissions.
 ```xml
-   <uses-permission
-          android:required="true"
-          android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<uses-permission
+    android:required="true"
+    android:name="android.permission.CHANGE_WIFI_STATE"/>
+<uses-permission
+    android:required="true"
+    android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+```
+
+## connectToNetwork()
+
+Connect to a Wifi Network in range
+
+**INPUT**
+```
+SSID - Name of the network you wish to connect to.
+
+Password - Secret Key.
+```
+**USAGE**
+```javascript
+WifiWizard.connectToNetwork(SSID,password).then((status)=>{
+  if(status=="connected"){
+    // Further Tasks
+  }
+}).catch(err => console.log(err))
+
+```
+
+## disconnectFromNetwork()
+
+Disconnect from existing network
+
+**USAGE**
+```javascript
+WifiWizard.disconnectFromNetwork().then(status=>{
+  if(status==true){
+    // Disconnected succesfully.
+  }
+  else
+  {
+    // Failed to disconnect.
+  }
+})
+```
+
+# HotspotWizard Usage
+
+## turnOnHotspot() 
+
+Enables Mobile Hotspot
+
+**Inputs**
+```
+  SSID - The name of the network you want to set.
+
+  Password - The secret Password you want to set.
+```
+
+**Output**
+
+JSON Stringified Object
+
+**For Android Version < 8** 
+```
+{status : "success"}
+OR
+{status : "success"}
+```
+
+**For Android Version > 8**
+
+In Android > 8, Hotspot SSID and Password cannot be set programatically. Hence the Wizard will return the randomly generated credentials back to the user
+
+```
+{
+status : "success",
+SSID:" <Randmoly Generated SSID> ",
+password: " <Randomly Generated Password">
+}
+```
+
+**USAGE**
+
+```javascript
+
+HotspotWizard.turnOnHotspot("John Doe Network","helloworld").then(data=>{
+  let jsonData = JSON.parse(data);
+  let status = jsonData.status;
+  if(status=="success"){
+    // Hotspot Enabled Successfully with custom credentials.
+  }
+  else if(status=="auth"){
+    // Hotspot Enabled Successfully with random credentials.
+    console.log(jsonData.SSID);
+    console.log(jsonData.status);
+  }
+}).catch(err=>console.log(err))
+```
+**PERMISSIONS**
+
+All Runtime Permissions are managed by the library and will be asked when required.
+
+Make sure your **AndroidManifest.xml** file has the following permissions.
+```xml
+<uses-permission
+    android:required="true"
+    android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission
+    android:required="true"
+    android:name="android.permission.CHANGE_WIFI_STATE"/>
+<uses-permission
+    android:required="true"
+    android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+```
+
+## turnOffHotspot() 
+
+Disables the mobile hotspot and restores previous wifi configuration.
+
+**OUTPUT**
+
+JSON Stringified Object
+
+```
+{status : "success"}
+OR
+{status : "success"}
+```
+
+**USAGE**
+
+```javascript
+HotspotWizard.turnOffHotspot().then(data=>{
+  let jsonData = JSON.parse(data);
+  let status = jsonData.status;
+  if(status=="success"){
+    // Hotspot Disabled Successfully
+  }
+  else
+  {
+    // Failed to disabled Hotspot.
+  }
+})
+```
+**PERMISSIONS**
+
+All Runtime Permissions are managed by the library and will be asked when required.
+
+Make sure your **AndroidManifest.xml** file has the following permissions.
+```xml
+<uses-permission
+    android:required="true"
+    android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission
+    android:required="true"
+    android:name="android.permission.CHANGE_WIFI_STATE"/>
+<uses-permission
+    android:required="true"
+    android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+```
+## isHotspotEnabled()
+
+Returns the status of Mobile Hotspot
+
+**OUTPUT**
+
+Boolean Value
+
+```javascript
+true / false
+```
+
+**USAGE**
+
+```javascript
+HotspotWizard.isHotspotEnabled().then(status=>{
+  if(status){
+    // Hotspot is Enabled.
+  }
+  else
+  {
+    // Hotspot is Disabled.
+  }
+})
 ```

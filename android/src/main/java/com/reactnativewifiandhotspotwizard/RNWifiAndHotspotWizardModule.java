@@ -45,14 +45,18 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
   final int PERMISSIONS_WRITE_SETTINGS=25;
   private WifiConfiguration mWifiConfiguration;
   private Object mReservation;
+
+  // TURN ON WIFI
   @ReactMethod
   public void turnOnWifi() {
     wifi.setWifiEnabled(true);
   }
 
+  // TURN OFF WIFI
   @ReactMethod
   public void turnOffWifi() {
-    wifi.setWifiEnabled(false);
+      wifi.setWifiEnabled(false);
+
   }
 
   @ReactMethod
@@ -65,8 +69,35 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 		Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
 				Uri.parse("package:" + getReactApplicationContext().getPackageName()));
 		getReactApplicationContext().startActivityForResult(intent, PERMISSIONS_WRITE_SETTINGS, null);
-
-	}
+  }
+  
+  @ReactMethod 
+  public void isHotspotEnabled(Promise promise){
+    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+      try{
+        Method method = wifi.getClass().getDeclaredMethod("getWifiApState");
+        method.setAccessible(true);
+        int actualState = (Integer) method.invoke(wifi,null);
+        if(actualState==13){
+          promise.resolve(true);
+        }
+        else{
+          promise.resolve(false);
+        }
+      }catch(Exception e){
+        promise.reject(e.getMessage());
+      }
+    }
+    else {
+      if(mReservation!=null){
+        promise.resolve(true);
+      }
+      else
+      {
+        promise.resolve(false);
+      }
+    }
+  }
   @ReactMethod
   public void turnOnHotspot(String SSID,String Password,Promise promise){
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat
@@ -103,7 +134,12 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
           WifiConfiguration.class, boolean.class);
           result = (Boolean) setWifiApEnabledMethod.invoke(wifi,myConfig,bool);
           JSONObject obj = new JSONObject();
-          obj.put("status","success");
+          if((Boolean) result){
+            obj.put("status","success");
+          }
+          else{
+            obj.put("status","failed");
+          }
           promise.resolve(obj.toString());
         }catch(Exception e){
           promise.reject(e.toString());
@@ -142,7 +178,13 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
           restoreConfigResult = setWifiApConfiguration.invoke(wifi,myConfig);
           result = (Boolean) setWifiApEnabledMethod.invoke(wifi,myConfig,bool);
           JSONObject obj = new JSONObject();
-          obj.put("status","success");
+          if((Boolean) result){
+            obj.put("status","success");
+          }
+          else
+          {
+            obj.put("status","failed");
+          }
           promise.resolve(obj.toString());
         }catch(Exception e){
           promise.reject(e.toString());
@@ -163,7 +205,13 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
         }
         else
         {
-          promise.reject("Hotspot Not Active");
+          try{
+            JSONObject obj = new JSONObject();
+            obj.put("status","failed");
+            promise.resolve(obj.toString());
+          }catch(Exception e){
+            promise.reject(e.getMessage());
+          }
         }
       }
     }
@@ -200,7 +248,135 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
       promise.resolve("failed to start hotspot");
     }
   }
+  @ReactMethod
+  public void disconnectFromNetwork(Promise promise){
+    boolean disconnect = wifi.disconnect();
+    promise.resolve(disconnect);
+  }
+  // Connects to an SSID.
+  @ReactMethod
+	public void connectToNetwork(String ssid, String password,Promise promise) {
+    // Start Scanning Networks
+    wifi.startScan();
+    WifiReceiver receiverWifi = new WifiReceiver(wifi, promise);
+    getCurrentActivity().registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+    // Get Scan Results
+    List < ScanResult > results = wifi.getScanResults();
+    ScanResult result=null;
+    for (ScanResult scanresult: results) {
+			String resultString = "" + scanresult.SSID;
+			if (ssid.equals(resultString)) {
+      result = scanresult;
+			}
+		}
+		//Make new configuration
+		WifiConfiguration conf = new WifiConfiguration();
 
+    	//clear alloweds
+		conf.allowedAuthAlgorithms.clear();
+		conf.allowedGroupCiphers.clear();
+		conf.allowedKeyManagement.clear();
+		conf.allowedPairwiseCiphers.clear();
+		conf.allowedProtocols.clear();
+
+    // Quote ssid and password
+		conf.SSID = String.format("\"%s\"", ssid);
+	
+    WifiConfiguration tempConfig = this.IsExist(conf.SSID);
+		if (tempConfig != null) {
+			wifi.removeNetwork(tempConfig.networkId);
+		}
+
+		String capabilities = result.capabilities;
+		
+    	// appropriate ciper is need to set according to security type used
+		if (capabilities.contains("WPA") || capabilities.contains("WPA2") || capabilities.contains("WPA/WPA2 PSK")) {
+
+			// This is needed for WPA/WPA2 
+			// Reference - https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/wifi/java/android/net/wifi/WifiConfiguration.java#149
+			conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+
+			conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+			conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+
+			conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+
+			conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+			conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+
+			conf.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+			conf.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+			conf.status = WifiConfiguration.Status.ENABLED;
+			conf.preSharedKey = String.format("\"%s\"", password);
+      
+		} else if (capabilities.contains("WEP")) {
+			// This is needed for WEP
+			// Reference - https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/wifi/java/android/net/wifi/WifiConfiguration.java#149
+			conf.wepKeys[0] = "\"" + password + "\"";
+			conf.wepTxKeyIndex = 0;
+			conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+			conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
+			conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+			conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+    	} else {
+			conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+		}
+
+		List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
+		if (mWifiConfigList == null) {
+		    promise.reject("Failed");
+        }
+
+		int updateNetwork = -1;
+
+		// Use the existing network config if exists
+		for (WifiConfiguration wifiConfig : mWifiConfigList) {
+			if (wifiConfig.SSID.equals(conf.SSID)) {
+        		conf=wifiConfig;
+				updateNetwork=conf.networkId;
+			}
+		}
+
+		// If network not already in configured networks add new network
+		if ( updateNetwork == -1 ) {
+	      updateNetwork = wifi.addNetwork(conf);
+	      wifi.saveConfiguration();
+		}
+
+    	// if network not added return false
+		if ( updateNetwork == -1 ) {
+		  promise.reject("Failed to add new network configurations");
+		}
+
+    	// disconnect current network
+		boolean disconnect = wifi.disconnect();
+		if ( !disconnect ) {
+			promise.reject("Failed to disconnect from existing network");
+		}
+
+   		// enable new network
+		boolean enableNetwork = wifi.enableNetwork(updateNetwork, true);
+		if ( !enableNetwork ) {
+			promise.reject("Failed to connect to network");
+		}
+
+		promise.resolve("connected");
+  }
+
+  // Check if the SSID is already configured previously
+  private WifiConfiguration IsExist(String SSID) {
+		List<WifiConfiguration> existingConfigs = wifi.getConfiguredNetworks();
+		if (existingConfigs == null) {
+			return null;
+		}
+
+		for (WifiConfiguration existingConfig : existingConfigs) {
+			if (existingConfig.SSID.equals("\"" + SSID + "\"")) {
+				return existingConfig;
+			}
+		}
+		return null;
+	}
   @ReactMethod
   public void startScan(Promise promise) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat
