@@ -2,9 +2,9 @@
 <p align="center">
 <a href=""><img src="https://img.shields.io/badge/Contributions-Welcome-blueviolet?style=for-the-badge&logo=github&logoColor=white&labelColor=black" alt="Contributions"/></a>
 <a href=""><img src="https://img.shields.io/badge/SLACK-JOIN%20SLACK-blueviolet?logo=Slack&labelColor=black&style=for-the-badge" alt="Slack"/></a>
-<img src="https://img.shields.io/badge/ANDROID-SUPPORTED-brightgreen?style=for-the-badge&logo=android&labelColor=black" alt="android"/>
+<img src="https://img.shields.io/badge/ANDROID-SUPPORTED-blue?style=for-the-badge&logo=android&labelColor=black" alt="android"/>
 <a href="https://www.npmjs.com/package/react-native-wifi-and-hotspot-wizard"><img src="https://img.shields.io/npm/v/react-native-wifi-and-hotspot-wizard?color=%23C33F14&logo=npm&style=for-the-badge&labelColor=black" alt="npm"></a>
-<a href="https://www.npmjs.com/package/react-native-wifi-and-hotspot-wizard"><img src="https://img.shields.io/npm/dt/react-native-wifi-and-hotspot-wizard?color=brightgreen&logo=npm&style=for-the-badge&labelColor=black" alt="Downloads"></a>
+<a href="https://www.npmjs.com/package/react-native-wifi-and-hotspot-wizard"><img src="https://img.shields.io/npm/dt/react-native-wifi-and-hotspot-wizard?color=success&logo=npm&style=for-the-badge&labelColor=black" alt="Downloads"></a>
 </p>
 
 # React Native Wifi & Hotspot Wizard
