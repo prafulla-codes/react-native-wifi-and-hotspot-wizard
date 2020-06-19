@@ -9,13 +9,9 @@
 
 # React Native Wifi & Hotspot Wizard
 
-## Introduction
+## ⚙️ Configure **Wifi and Hotspot** Settings both using single library. 
 
-⚙️ Configure **Wifi and Hotspot** Settings both using single library. 
-
-This library also **automatically deals with run-time permission management**.
-
-**Note** - This Library is now under development and supports only **Android** as of now.
+### This library also **automatically deals with run-time permission management**.
 
 ## Getting started
 
