@@ -9,17 +9,21 @@
 
 # React Native Wifi & Hotspot Wizard
 
- ⚙️ Configure **Wifi and Hotspot** Settings both using single library. 
+ ⚙️ Configure both **Wifi and Hotspot** settings using a single library. 
 
   This library also **automatically deals with run-time permission management**.
 
 ## Getting started
 
-`$ npm install https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard --save`
+```bash
+$ npm install react-native-wifi-and-hotspot-wizard --save
+```
 
 ### Mostly automatic installation
 
-`$ react-native link react-native-wifi-and-hotspot-wizard`
+```bash
+$ react-native link react-native-wifi-and-hotspot-wizard
+```
 
 
 ## Manual Installation ( If Automatic not working )
