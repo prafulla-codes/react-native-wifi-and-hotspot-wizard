@@ -13,19 +13,7 @@
 
   This library also **automatically deals with run-time permission management**.
 
-## Installation
 
-### NPM
-```bash
-  npm install react-native-wifi-and-hotspot-wizard
-```
-
-## Auto Linking
-```bash
-  react-native link react-native-wifi-and-hotspot-wizard
-```
-
-## Usage
 <a href="https://react-native-wifi-and-hotspot-wizard.netlify.app" target="_blank">
 <img 
 height="100"     src="https://res.cloudinary.com/prafulla98/image/upload/v1592631858/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Frame_4get_started_button_fvscwx.png">
