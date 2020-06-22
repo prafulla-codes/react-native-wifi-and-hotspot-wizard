@@ -25,3 +25,26 @@ height="100"  src="https://res.cloudinary.com/prafulla98/image/upload/v159263336
 </p>
 </a>
 
+# CHANGELOG
+
+## v1.0.1 (STABLE)
+
+- Improved Permission Management
+- Added Helper Java Methods
+
+## v1.0.0-release
+
+**Added Functionalities:** 
+- connectToNetwork()
+- disconnectFromNetwork()
+
+**Renamed getNearbyDevices() to getNearbyNetworks()**
+## v1.0.0-beta.0
+
+- Core Functionalites
+  - turnOnWifi()
+  - turnOffWifi()
+  - turnOnHotspot()
+  - turnOffHotspot()
+  - getNearbyDevices()
+  - isWifiEnabled()
