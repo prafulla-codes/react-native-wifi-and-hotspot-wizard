@@ -526,49 +526,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 
   }
 
-  class WifiReceiver2 extends BroadcastReceiver {
-    private Promise promise;
-    private WifiManager wifi;
-
-    public WifiReceiver(final WifiManager wifi) {
-      super();
-      this.wifi = wifi;
-    }
-
-    // This method call when number of wifi connections changed
-    public void onReceive(Context c, Intent intent) {
-
-      c.unregisterReceiver(this);
-
-      try {
-        List<ScanResult> results = this.wifi.getScanResults();
-        JSONArray wifiArray = new JSONArray();
-
-        for (ScanResult result : results) {
-          JSONObject wifiObject = new JSONObject();
-          if (!result.SSID.equals("")) {
-            try {
-              wifiObject.put("SSID", result.SSID);
-              wifiObject.put("BSSID", result.BSSID);
-              wifiObject.put("capabilities", result.capabilities);
-              wifiObject.put("frequency", result.frequency);
-              wifiObject.put("level", result.level);
-              wifiObject.put("timestamp", result.timestamp);
-            } catch (Exception e) {
-              this.promise.reject(e.getMessage());
-              return;
-            }
-            wifiArray.put(wifiObject);
-          }
-        }
-        this.promise.resolve(wifiArray.toString());
-        return;
-      } catch (Exception e) {
-        this.promise.reject(e.getMessage());
-        return;
-      }
-    }
-  }
+ 
   class WifiReceiver extends BroadcastReceiver {
 
     private Promise promise;
