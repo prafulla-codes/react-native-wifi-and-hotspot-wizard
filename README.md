@@ -27,7 +27,10 @@ height="100"  src="https://res.cloudinary.com/prafulla98/image/upload/v159263336
 
 # CHANGELOG
 
-## v1.0.1 (STABLE)
+## v1.0.2 (STABLE)
+
+- Fixed WifiReceiver Bug.
+## v1.0.1 (BROKEN)
 
 - Improved Permission Management
 - Added Helper Java Methods
