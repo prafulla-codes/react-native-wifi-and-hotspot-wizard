@@ -371,13 +371,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
   // Connects to an SSID.
   @ReactMethod
 	public void connectToNetwork(String network,String ssid, String password,Promise promise) {
-    // Start Scanning Networks
-    // wifi.startScan();
-    // WifiReceiver receiverWifi = new WifiReceiver(wifi, promise);
-    // getCurrentActivity().registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-
-    // Get Scan Results
-    // List < ScanResult > results = wifi.getScanResults();
+ 
     JSONObject networkObj=null;
     try{
       networkObj = new JSONObject(network);
@@ -385,17 +379,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
       promise.reject(e.getMessage());
     }
 
-    // result.SSID = networkObj.get("SSID");
-    // result.BSSID = networkObj.get("BSSID");
-    // result.capabilities = networkObj.get("capabilities");
-    // result.frequency = networkObj.get("frequency");
-    // result.level=networkObj.get("level");
-    // for (ScanResult scanresult: results) {
-		// 	String resultString = "" + scanresult.SSID;
-		// 	if (ssid.equals(resultString)) {
-    //   result = scanresult;
-		// 	}
-    // }
+
     if(networkObj==null){
       promise.resolve("not found");
       return;
