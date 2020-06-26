@@ -8,7 +8,7 @@ class WifiWizard {
     static turnOffWifi = () => RNWifiAndHotspotWizard.turnOffWifi();
     static isWifiEnabled = () => RNWifiAndHotspotWizard.isWifiEnabled();
     static getNearbyNetworks = () => RNWifiAndHotspotWizard.startScan();
-    static connectToNetwork = (SSID,password) => RNWifiAndHotspotWizard.connectToNetwork(SSID,password);
+    static connectToNetwork = (network,SSID,password) => RNWifiAndHotspotWizard.connectToNetwork(network,SSID,password);
     static disconnectFromNetwork = () => RNWifiAndHotspotWizard.disconnectFromNetwork();
 }
 
@@ -17,6 +17,7 @@ class HotspotWizard {
         WifiWizard.turnOffWifi();
         return RNWifiAndHotspotWizard.turnOnHotspot(SSID,Password);
     } 
+    static getHostAddress = () => RNWifiAndHotspotWizard.getHostAddress();
     static isHotspotEnabled = () => RNWifiAndHotspotWizard.isHotspotEnabled()
     static turnOffHotspot = () => RNWifiAndHotspotWizard.turnOffHotspot();
 }

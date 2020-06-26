@@ -7,12 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "react-native-wifi",
-    "react-native-hotspot",
-    "react-native-wifi-and-hotspot-wizard",
-    "react-native-wifi-hotspot",
-    "wifi",
-    "hotspot"
+    "react-native"
   ],
   "author": "Prafulla Raichurkar",
   "license": "",

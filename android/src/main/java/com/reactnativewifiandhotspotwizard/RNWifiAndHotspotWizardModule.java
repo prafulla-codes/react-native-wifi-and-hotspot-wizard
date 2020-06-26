@@ -34,7 +34,6 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
 import javax.security.auth.callback.Callback;
 
 public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
@@ -326,7 +325,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
         }
       }
   }
-
+ 
   public class LocalOnlyHotspotCallback extends WifiManager.LocalOnlyHotspotCallback{
     Promise promise;    
     String SSID,Password;
@@ -371,21 +370,33 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
   }
   // Connects to an SSID.
   @ReactMethod
-	public void connectToNetwork(String ssid, String password,Promise promise) {
+	public void connectToNetwork(String network,String ssid, String password,Promise promise) {
     // Start Scanning Networks
-    wifi.startScan();
-    WifiReceiver receiverWifi = new WifiReceiver(wifi, promise);
-    getCurrentActivity().registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+    // wifi.startScan();
+    // WifiReceiver receiverWifi = new WifiReceiver(wifi, promise);
+    // getCurrentActivity().registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+
     // Get Scan Results
-    List < ScanResult > results = wifi.getScanResults();
-    ScanResult result=null;
-    for (ScanResult scanresult: results) {
-			String resultString = "" + scanresult.SSID;
-			if (ssid.equals(resultString)) {
-      result = scanresult;
-			}
+    // List < ScanResult > results = wifi.getScanResults();
+    JSONObject networkObj=null;
+    try{
+      networkObj = new JSONObject(network);
+    }catch(Exception e){
+      promise.reject(e.getMessage());
     }
-    if(result==null){
+
+    // result.SSID = networkObj.get("SSID");
+    // result.BSSID = networkObj.get("BSSID");
+    // result.capabilities = networkObj.get("capabilities");
+    // result.frequency = networkObj.get("frequency");
+    // result.level=networkObj.get("level");
+    // for (ScanResult scanresult: results) {
+		// 	String resultString = "" + scanresult.SSID;
+		// 	if (ssid.equals(resultString)) {
+    //   result = scanresult;
+		// 	}
+    // }
+    if(networkObj==null){
       promise.resolve("not found");
       return;
     }
@@ -405,9 +416,13 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
     WifiConfiguration tempConfig = this.IsExist(conf.SSID);
 		if (tempConfig != null) {
 			wifi.removeNetwork(tempConfig.networkId);
-		}
-
-		String capabilities = result.capabilities;
+    }
+    String capabilities="";
+    try{
+      capabilities = (String) networkObj.get("capabilities");
+    }catch(Exception e){
+      promise.reject(e.getMessage());
+    }
 		
     	// appropriate ciper is need to set according to security type used
 		if (capabilities.contains("WPA") || capabilities.contains("WPA2") || capabilities.contains("WPA/WPA2 PSK")) {
@@ -479,7 +494,11 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 		if ( !enableNetwork ) {
 			promise.resolve("failed");
 		}
-
+    try {
+      Thread.sleep(500);
+    } catch (InterruptedException ie) {
+        promise.resolve("Failed in sleep thread");
+    }
 		promise.resolve("connected");
   }
 
@@ -497,8 +516,16 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 		}
 		return null;
   }
-  public void startScan(){
+  
 
+  @ReactMethod 
+  public void getHostAddress(Promise promise){
+    try{
+      String address = (String) InetAddress.getLocalHost().getHostAddress();
+      promise.resolve(address);
+    }catch(Exception e){
+      promise.resolve(e.getMessage());
+    }
   }
   @ReactMethod
   public void startScan(Promise promise) {
@@ -526,7 +553,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 
   }
 
- 
+
   class WifiReceiver extends BroadcastReceiver {
 
     private Promise promise;
@@ -537,6 +564,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
       this.promise = promise;
       this.wifi = wifi;
     }
+
 
     // This method call when number of wifi connections changed
     public void onReceive(Context c, Intent intent) {
