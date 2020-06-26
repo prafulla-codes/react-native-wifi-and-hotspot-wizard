@@ -27,6 +27,11 @@ height="100"  src="https://res.cloudinary.com/prafulla98/image/upload/v159263336
 
 # CHANGELOG
 
+## v1.0.3 (STABLE) [Major Change]
+
+- connectToNetwork() usage changed
+- connectToNetwork() is now only meant to be used in context with getNearbyDevices(). Checkout the documentation for updated usage.
+
 ## v1.0.2 (STABLE)
 
 - Fixed WifiReceiver Bug.
