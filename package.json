@@ -15,10 +15,11 @@
     "hotspot"
   ],
   "author": "Prafulla Raichurkar",
-  "license": "",
+  "license": "GPL-3.0",
   "peerDependencies": {
     "react-native": "^0.41.2"
   },
+  "homepage":"https://react-native-wifi-and-hotspot-wizard.netlify.app/",
   "repository": {
   "type": "git",
   "url": "https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard.git"
