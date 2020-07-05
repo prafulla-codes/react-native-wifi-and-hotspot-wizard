@@ -1,4 +1,9 @@
 # ⏱️ CHANGELOG
+## v1.0.4 (STABLE) [Breaking Changes]
+- **All methods return JavaScript Object instead of stringified javascript. (IMPORTANT)** 
+- Added isReadyForCommunication() method in WifiWizard
+
+Please Check The API  [Documentation](https://react-native-wifi-and-hotspot-wizard.netlify.app/getting-started/]) for latest usage
 
 ## v1.0.3 (STABLE) [Major Change]
 

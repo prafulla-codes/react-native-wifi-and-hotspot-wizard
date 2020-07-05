@@ -1,6 +1,6 @@
 {
   "name": "react-native-wifi-and-hotspot-wizard",
-  "version": "1.0.3-stable",
+  "version": "1.0.4-stable",
   "description": "Configure essential wifi and hotspot settings easily.",
   "main": "index.js",
   "scripts": {

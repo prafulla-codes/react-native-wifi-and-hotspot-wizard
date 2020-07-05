@@ -67,7 +67,10 @@ width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593955
 
 Feel free to contribute to this library, any small addition to this is very much appreciated and welcomed :)
 
+
 Checkout the [CONTRIBUTION Guidelines](CONTRIBUTION.md) to get started. 
+
+You can start by checking out some of the [Issues](https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard/issues) in the application.
 
 ## ⏱️ CHANGELOG
 
