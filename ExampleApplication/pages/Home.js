@@ -19,12 +19,14 @@ import { FlatList } from 'react-native-gesture-handler';
 import NearbyDevices from '../components/NearbyDevices';
 import ConnectToNetwork from '../components/ConnectToNetwork';
 import { Dimensions } from 'react-native';
+import TurnOnHotspot from '../components/TurnOnHotspot';
 const Home = () =>{
     const win = Dimensions.get('window');
 
     // * State Variables
     let [GetNearbyNetworksModalState,showGetNearbyNetworksModal] = useState(false);
     let [ConnectToNetworkModalState,showConnectToNetworkModal] = useState(false);
+    let [TurnOnHotspotModalState,showTurnOnHotspotModal] = useState(false);
 
     // * Updates The Nearby Devices Whenever Get Nearby Devices Modal is Open
  
@@ -69,6 +71,22 @@ const Home = () =>{
             <Text style={style.buttonText}> CONNECT TO NETWORK</Text>
           </View>
         </Button>
+        <Text style={{fontSize:20,fontWeight:'bold',marginBottom:5}}> Test Hotspot Wizard : </Text>
+        <Button style={{backgroundColor:'#00e676',borderWidth:0,elevation:5}} onPress={()=>{turnOnHotspot()}} >
+          <View >
+            <Text style={style.buttonText}> TURN ON HOTSPOT</Text>
+          </View>
+        </Button>
+        <Button style={{backgroundColor:'#e57373',borderWidth:0,elevation:5}}  onPress={()=>{turnOffWifi()}} >
+          <View >
+            <Text style={style.buttonText}> TURN OFF HOTSPOT</Text>
+          </View>
+        </Button>
+        <Button style={{backgroundColor:'#42a5f5',borderWidth:0,elevation:5}} onPress={()=>{isWifiEnabled()}}>
+          <View >
+            <Text style={style.buttonText}> IS HOTSPOT ENABLED?</Text>
+          </View>
+        </Button>
       <Modal isVisible={GetNearbyNetworksModalState} style={{justifyContent: 'flex-end',
     margin: 0,}}><View style={{height:win.height/2 ,backgroundColor:'#fff',padding:15}}>
               <NearbyDevices/>
@@ -85,6 +103,10 @@ const Home = () =>{
       <View><Text style={style.headerText}> Close </Text></View>
       </Button>
       </View></Modal>
+      <Modal isVisible={TurnOnHotspotModalState} style={{justifyContent: 'flex-end',
+    margin: 0,}}>
+              <TurnOnHotspot showTurnOnHotspotModal={showTurnOnHotspotModal}/>  
+  </Modal>
       <Modal isVisible={ConnectToNetworkModalState} style={{justifyContent: 'flex-end',
     margin: 0,}}>
       <ConnectToNetwork showConnectToNetworkModal={showConnectToNetworkModal}/>
@@ -137,6 +159,9 @@ const Home = () =>{
             Toast.show('WiFi is Not Ready For Communication')
           }
         })
+      }
+      function turnOnHotspot(){
+        showTurnOnHotspotModal(true);
       }
 }
 
