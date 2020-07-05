@@ -1,4 +1,4 @@
-<p align="center"> <img width="30%" alt="Cover of Abell" src="https://res.cloudinary.com/prafulla98/image/upload/v1593944860/React%20Native%20Wifi%20and%20Hotspot%20Wizard/logo_lfjhaf.gif"/> </p>
+<p align="center"> <img width="30%" alt="Cover of Abell" src="https://res.cloudinary.com/prafulla98/image/upload/v1593953784/React%20Native%20Wifi%20and%20Hotspot%20Wizard/logo_k9mrzb.gif"/> </p>
 
 <h1 align="center"> React Native Wifi & Hotspot Wizard </h1>
 
