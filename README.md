@@ -50,7 +50,7 @@ height="100"     src="https://res.cloudinary.com/prafulla98/image/upload/v159263
 ## 📱 Test Library 
 
 To checkout this library before using it you can install 
-[WifiAndHotspotWizardDemo.apk](https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard/WifiAndHotspotWizardDemo.apk)
+[WifiAndHotspotWizardDemo.apk](https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard/blob/master/WifiAndHotspotWizardDemo.apk)
 
 You can also find the code for Example Application over [Here](https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard/tree/master/ExampleApplication)
 
