@@ -45,10 +45,12 @@ HotspotWizard.turnOffhotspot(); // turns off hotspot
 <img 
 height="50"     src="https://res.cloudinary.com/prafulla98/image/upload/v1592631858/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Frame_4get_started_button_fvscwx.png"></a>
 
-## Test Library 
+## 📱 Test Library 
 
 To checkout this library before using it you can install 
 [WifiAndHotspotWizardDemo.apk](https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard/WifiAndHotspotWizardDemo.apk)
+
+You can also find the code for Example Application over [Here](https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard/tree/master/ExampleApplication)
 
 <img 
 width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593955056/React%20Native%20Wifi%20and%20Hotspot%20Wizard/screenshot1_1_ggi2wh.png"></a>
