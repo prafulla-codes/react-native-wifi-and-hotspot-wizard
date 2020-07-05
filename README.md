@@ -51,7 +51,13 @@ To checkout this library before using it you can install
 [WifiAndHotspotWizardDemo.apk](https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard/WifiAndHotspotWizardDemo.apk)
 
 <img 
-width="50%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593955056/React%20Native%20Wifi%20and%20Hotspot%20Wizard/screenshot1_1_ggi2wh.png"></a>
+width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593955056/React%20Native%20Wifi%20and%20Hotspot%20Wizard/screenshot1_1_ggi2wh.png"></a>
+<img 
+width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593955602/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Screenshot_2020-07-05-18-51-13-836_com_qfsy5v.png"></a> 
+<img 
+width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593955605/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Screenshot_2020-07-05-18-50-57-816_com_tq5koi.png"></a>
+
+
 
 ## 😎 CONTRIBUTE
 
