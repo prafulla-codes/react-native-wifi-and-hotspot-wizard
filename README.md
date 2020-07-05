@@ -7,14 +7,11 @@
 <a href="https://www.npmjs.com/package/react-native-wifi-and-hotspot-wizard"><img src="https://img.shields.io/npm/v/react-native-wifi-and-hotspot-wizard?color=%23C33F14&logo=npm&style=for-the-badge&labelColor=black" alt="npm"></a>
 <a href="https://www.npmjs.com/package/react-native-wifi-and-hotspot-wizard"><img src="https://img.shields.io/npm/dt/react-native-wifi-and-hotspot-wizard?color=brightgreen&logo=npm&style=for-the-badge&labelColor=black" alt="Downloads"></a>
 </p>
-
-<img style="margin-right:10px;margin-left:10px"
-width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593957755/React%20Native%20Wifi%20and%20Hotspot%20Wizard/connectToNetwork_oflsox.gif"></a>
-<img 
-width="30%"  style="margin-right:10px"   src="https://res.cloudinary.com/prafulla98/image/upload/v1593957741/React%20Native%20Wifi%20and%20Hotspot%20Wizard/getNearbyNetworks_j2o3pw.gif"></a> 
-<img 
+<pre><img 
+width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593957755/React%20Native%20Wifi%20and%20Hotspot%20Wizard/connectToNetwork_oflsox.gif"></a>    <img 
+width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593957741/React%20Native%20Wifi%20and%20Hotspot%20Wizard/getNearbyNetworks_j2o3pw.gif"></a>   <img 
 width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593957751/React%20Native%20Wifi%20and%20Hotspot%20Wizard/turnOnHotspot_xry50d.gif"></a>
-
+</pre>
 
  ⚙️ Configure both **Wifi and Hotspot** settings using a single library. 
 
