@@ -1,5 +1,5 @@
 <p align="center"> <img width="70%" alt="Cover of React Native Wifi And Hotspot Wizard" src="https://res.cloudinary.com/prafulla98/image/upload/v1593954792/React%20Native%20Wifi%20and%20Hotspot%20Wizard/logo_fxmvs1.gif"/> </p>
-
+<meta name="twitter:card" content="summary_large_image">
 <p align="center">
 <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contributions-Welcome-blueviolet?style=for-the-badge&logo=github&logoColor=white&labelColor=black" alt="Contributions"/></a>
 <a href="https://join.slack.com/t/wifihotspotwizard/shared_invite/zt-f2mmp8p3-EIlxb~FOlNd3FaCgP6UZkQ"><img src="https://img.shields.io/badge/SLACK-JOIN%20SLACK-blueviolet?logo=Slack&labelColor=black&style=for-the-badge" alt="Slack"/></a>
@@ -75,3 +75,5 @@ You can start by checking out some of the [Issues](https://github.com/Pika1998/r
 ## ⏱️ CHANGELOG
 
 You can find all the changes made to this library in [CHANGELOG.md](CHANGELOG.md)
+
+npm
