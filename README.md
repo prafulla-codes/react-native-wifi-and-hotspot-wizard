@@ -21,13 +21,13 @@ width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593957
 
 Install The Library Using NPM
 
-```shell
+```bash
 npm install react-native-wifi-and-hotspot-wizard
 ```
 
 Link The Library
 
-```shell
+```bash
 react-native link react-native-wifi-and-hotspot-wizard
 ```
 
