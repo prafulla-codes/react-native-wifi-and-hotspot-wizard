@@ -1,4 +1,4 @@
-<p align="center"> <img width="70%" alt="Cover of Abell" src="https://res.cloudinary.com/prafulla98/image/upload/v1593954792/React%20Native%20Wifi%20and%20Hotspot%20Wizard/logo_fxmvs1.gif"/> </p>
+<p align="center"> <img width="70%" alt="Cover of React Native Wifi And Hotspot Wizard" src="https://res.cloudinary.com/prafulla98/image/upload/v1593954792/React%20Native%20Wifi%20and%20Hotspot%20Wizard/logo_fxmvs1.gif"/> </p>
 
 
 <p align="center">
@@ -8,7 +8,12 @@
 <a href="https://www.npmjs.com/package/react-native-wifi-and-hotspot-wizard"><img src="https://img.shields.io/npm/v/react-native-wifi-and-hotspot-wizard?color=%23C33F14&logo=npm&style=for-the-badge&labelColor=black" alt="npm"></a>
 <a href="https://www.npmjs.com/package/react-native-wifi-and-hotspot-wizard"><img src="https://img.shields.io/npm/dt/react-native-wifi-and-hotspot-wizard?color=brightgreen&logo=npm&style=for-the-badge&labelColor=black" alt="Downloads"></a>
 </p>
-
+<img 
+width="32%"  src="https://res.cloudinary.com/prafulla98/image/upload/v1593957755/React%20Native%20Wifi%20and%20Hotspot%20Wizard/connectToNetwork_oflsox.gif" alt="Connect To Network"></a>&nbsp&nbsp
+<img 
+width="32%"  src="https://res.cloudinary.com/prafulla98/image/upload/v1593957741/React%20Native%20Wifi%20and%20Hotspot%20Wizard/getNearbyNetworks_j2o3pw.gif" alt="Connect To Network"></a>&nbsp&nbsp&nbsp
+<img 
+width="32%"  src="https://res.cloudinary.com/prafulla98/image/upload/v1593957751/React%20Native%20Wifi%20and%20Hotspot%20Wizard/turnOnHotspot_xry50d.gif" alt="Connect To Network"></a>
 
  ⚙️ Configure both **Wifi and Hotspot** settings using a single library. 
 
@@ -43,7 +48,7 @@ HotspotWizard.turnOffhotspot(); // turns off hotspot
 
 <a href="https://react-native-wifi-and-hotspot-wizard.netlify.app" target="_blank">
 <img 
-height="50"     src="https://res.cloudinary.com/prafulla98/image/upload/v1592631858/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Frame_4get_started_button_fvscwx.png"></a>
+height="100"     src="https://res.cloudinary.com/prafulla98/image/upload/v1592631858/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Frame_4get_started_button_fvscwx.png"></a>
 
 ## 📱 Test Library 
 
