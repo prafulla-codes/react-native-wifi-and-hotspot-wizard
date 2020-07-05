@@ -1,6 +1,5 @@
-<p align="center"> <img width="30%" alt="Cover of Abell" src="https://res.cloudinary.com/prafulla98/image/upload/v1593953784/React%20Native%20Wifi%20and%20Hotspot%20Wizard/logo_k9mrzb.gif"/> </p>
+<p align="center"> <img width="40%" alt="Cover of Abell" src="https://res.cloudinary.com/prafulla98/image/upload/v1593953784/React%20Native%20Wifi%20and%20Hotspot%20Wizard/logo_k9mrzb.gif"/> </p>
 
-<h1 align="center"> React Native Wifi & Hotspot Wizard </h1>
 
 <p align="center">
 <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contributions-Welcome-blueviolet?style=for-the-badge&logo=github&logoColor=white&labelColor=black" alt="Contributions"/></a>
