@@ -1,5 +1,5 @@
 
-import { NativeModules } from 'react-native';
+import { NativeModules,PermissionsAndroid } from 'react-native';
 
 const { RNWifiAndHotspotWizard } = NativeModules;
 
@@ -7,19 +7,29 @@ class WifiWizard {
     static turnOnWifi = () => RNWifiAndHotspotWizard.turnOnWifi();
     static turnOffWifi = () => RNWifiAndHotspotWizard.turnOffWifi();
     static isWifiEnabled = () => RNWifiAndHotspotWizard.isWifiEnabled();
-    static getNearbyNetworks = () => RNWifiAndHotspotWizard.startScan();
-    static connectToNetwork = (network,SSID,password) => RNWifiAndHotspotWizard.connectToNetwork(network,SSID,password);
+    static getNearbyNetworks = async () =>{
+       let devices =  await RNWifiAndHotspotWizard.startScan();
+       return JSON.parse(devices);
+    } 
+    static connectToNetwork = async (network,SSID,password) =>{
+       let message = await RNWifiAndHotspotWizard.connectToNetwork(JSON.stringify(network),SSID,password);
+       return JSON.parse(message);
+    } 
     static disconnectFromNetwork = () => RNWifiAndHotspotWizard.disconnectFromNetwork();
+    static isReadyForCommunication = () => RNWifiAndHotspotWizard.isReadyForCommunication();
 }
 
 class HotspotWizard {
-    static turnOnHotspot = (SSID,Password) =>{
+    static turnOnHotspot = async (SSID,Password) =>{
         WifiWizard.turnOffWifi();
-        return RNWifiAndHotspotWizard.turnOnHotspot(SSID,Password);
+        let status = await  RNWifiAndHotspotWizard.turnOnHotspot(SSID,Password);
+        return JSON.parse(status);
     } 
-    static getHostAddress = () => RNWifiAndHotspotWizard.getHostAddress();
     static isHotspotEnabled = () => RNWifiAndHotspotWizard.isHotspotEnabled()
-    static turnOffHotspot = () => RNWifiAndHotspotWizard.turnOffHotspot();
+    static turnOffHotspot = async () =>{
+        let message = await RNWifiAndHotspotWizard.turnOffHotspot();
+        return JSON.parse(message);
+    } 
 }
 export {
     WifiWizard,

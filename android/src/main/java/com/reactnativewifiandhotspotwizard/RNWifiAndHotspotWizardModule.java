@@ -13,7 +13,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
 import java.lang.reflect.Method;
+import 	android.net.NetworkInfo;
 import java.lang.Exception;
+import android.net.ConnectivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.Manifest;
@@ -35,7 +37,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import javax.security.auth.callback.Callback;
-
+import android.net.wifi.WifiInfo;
+import android.net.wifi.SupplicantState;
 public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
   WifiManager wifi;
   private final ReactApplicationContext reactContext;
@@ -46,25 +49,51 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
   private WifiConfiguration mWifiConfiguration;
   private Object mReservation;
 
-  // TURN ON WIFI
+  // * TURN ON WIFI [Permissions - CHANGE_WIFI_STATE]
   @ReactMethod
-  public void turnOnWifi() {
-    wifi.setWifiEnabled(true);
+  public void turnOnWifi(Promise promise) {
+    try{
+      wifi.setWifiEnabled(true);
+      promise.resolve(true);
+    }catch(Exception e){
+      promise.reject(e.getMessage());
+    }
+
   }
 
-  // TURN OFF WIFI
+  // * TURN OFF WIFI [Permissions - CHANGE_WIFI_STATE]
   @ReactMethod
-  public void turnOffWifi() {
+  public void turnOffWifi(Promise promise) {
+    try{
       wifi.setWifiEnabled(false);
-
+      promise.resolve(true);
+    }catch(Exception e){
+      promise.reject(e.getMessage());
+    }
   }
 
+  // * CHECK IF WIFI IS ENABLED [Permissions - CHANGE_WIFI_STATE]
   @ReactMethod
   public void isWifiEnabled(Promise promise) {
     boolean isWifiEnabled = wifi.isWifiEnabled();
     promise.resolve(isWifiEnabled);
   }
 
+  // * CHECKS IF WIFI IS READY TO COMMUNICATE [Permissions - ACCESS_NETWORK_STATE]
+  @ReactMethod
+  public void isReadyForCommunication(Promise promise){
+    ConnectivityManager connManager = (ConnectivityManager) reactContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+    NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+    if (mWifi.isConnected()) {
+        promise.resolve(true);
+    }
+    else
+    {
+        promise.resolve(false);
+    }
+  }
+  // * [Needs Permission WRITE_SETTINGS]
   public void writePermission() {
 		Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
 				Uri.parse("package:" + getReactApplicationContext().getPackageName()));
@@ -365,23 +394,33 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
   }
   @ReactMethod
   public void disconnectFromNetwork(Promise promise){
-    boolean disconnect = wifi.disconnect();
-    promise.resolve(disconnect);
+    try{
+      boolean disconnect = wifi.disconnect();
+      promise.resolve(disconnect);
+    }catch(Exception e){
+      promise.reject(e.getMessage());
+    }
+   
   }
   // Connects to an SSID.
   @ReactMethod
 	public void connectToNetwork(String network,String ssid, String password,Promise promise) {
- 
+
     JSONObject networkObj=null;
+    JSONObject message= new JSONObject();
     try{
       networkObj = new JSONObject(network);
     }catch(Exception e){
       promise.reject(e.getMessage());
     }
 
-
     if(networkObj==null){
-      promise.resolve("not found");
+      try{
+        message.put("status","not found");
+        promise.resolve(message.toString());
+      }catch(Exception e){
+        promise.reject(e.getMessage());
+      }
       return;
     }
 		//Make new configuration
@@ -443,7 +482,12 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 
 		List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
 		if (mWifiConfigList == null) {
-		    promise.resolve("failed");
+        try{
+          message.put("status","failed");
+          promise.resolve(message.toString());
+        }catch(Exception e){
+          promise.reject(e.getMessage());
+        }
         }
 
 		int updateNetwork = -1;
@@ -464,26 +508,52 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 
     	// if network not added return false
 		if ( updateNetwork == -1 ) {
-		  promise.resolve("failed");
+      try{
+        message.put("status","failed");
+        promise.resolve(message.toString());
+      }catch(Exception e){
+        promise.reject(e.getMessage());
+      }
+		  
 		}
 
     	// disconnect current network
 		boolean disconnect = wifi.disconnect();
 		if ( !disconnect ) {
-			promise.resolve("failed");
+      try{
+        message.put("status","failed");
+        promise.resolve(message.toString());
+      }catch(Exception e){
+        promise.reject(e.getMessage());
+      }
 		}
 
    		// enable new network
 		boolean enableNetwork = wifi.enableNetwork(updateNetwork, true);
 		if ( !enableNetwork ) {
-			promise.resolve("failed");
+      try{
+        message.put("status","failed");
+        promise.resolve(message.toString());
+      }catch(Exception e){
+        promise.reject(e.getMessage());
+      }
 		}
     try {
       Thread.sleep(500);
     } catch (InterruptedException ie) {
-        promise.resolve("Failed in sleep thread");
+      try{
+        message.put("status","failed");
+        promise.resolve(message.toString());
+      }catch(Exception e){
+        promise.reject(e.getMessage());
+      }
     }
-		promise.resolve("connected");
+    try{
+      message.put("status","connected");
+      promise.resolve(message.toString());
+    }catch(Exception e){
+      promise.reject(e.getMessage());
+    }
   }
 
   // Check if the SSID is already configured previously
@@ -502,30 +572,28 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
   }
   
 
-  @ReactMethod 
-  public void getHostAddress(Promise promise){
-    try{
-      String address = (String) InetAddress.getLocalHost().getHostAddress();
-      promise.resolve(address);
-    }catch(Exception e){
-      promise.resolve(e.getMessage());
-    }
-  }
+
+
   @ReactMethod
   public void startScan(Promise promise) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-      int permissionAccessCoarseLocation = ContextCompat.checkSelfPermission(getReactApplicationContext(),Manifest.permission.ACCESS_COARSE_LOCATION);
-      List<String> listPermissionsNeeded = new ArrayList<>();
-      if(permissionAccessCoarseLocation != PackageManager.PERMISSION_GRANTED){
-        listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+    try{
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+        int permissionAccessCoarseLocation = ContextCompat.checkSelfPermission(getReactApplicationContext(),Manifest.permission.ACCESS_COARSE_LOCATION);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if(permissionAccessCoarseLocation != PackageManager.PERMISSION_GRANTED){
+          listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+        if(!listPermissionsNeeded.isEmpty()){
+          ActivityCompat.requestPermissions(getCurrentActivity(),listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
+        }
       }
-      if(!listPermissionsNeeded.isEmpty()){
-        ActivityCompat.requestPermissions(getCurrentActivity(),listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
-      }
+      wifi.startScan();
+      WifiReceiver receiverWifi = new WifiReceiver(wifi, promise);
+      getCurrentActivity().registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+    }catch(Exception e){
+      promise.reject(e.getMessage());
     }
-    wifi.startScan();
-    WifiReceiver receiverWifi = new WifiReceiver(wifi, promise);
-    getCurrentActivity().registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+ 
 
   }
 

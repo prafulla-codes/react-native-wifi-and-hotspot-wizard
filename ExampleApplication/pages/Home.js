@@ -13,7 +13,7 @@ import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Button from 'apsl-react-native-button';
 import style from '../assets/styles/style';
-import { WifiWizard } from 'react-native-wifi-and-hotspot-wizard';
+import { WifiWizard, HotspotWizard } from 'react-native-wifi-and-hotspot-wizard';
 import Toast from 'react-native-simple-toast';
 import { FlatList } from 'react-native-gesture-handler';
 import NearbyDevices from '../components/NearbyDevices';
@@ -77,12 +77,12 @@ const Home = () =>{
             <Text style={style.buttonText}> TURN ON HOTSPOT</Text>
           </View>
         </Button>
-        <Button style={{backgroundColor:'#e57373',borderWidth:0,elevation:5}}  onPress={()=>{turnOffWifi()}} >
+        <Button style={{backgroundColor:'#e57373',borderWidth:0,elevation:5}}  onPress={()=>{turnOffHotspot()}} >
           <View >
             <Text style={style.buttonText}> TURN OFF HOTSPOT</Text>
           </View>
         </Button>
-        <Button style={{backgroundColor:'#42a5f5',borderWidth:0,elevation:5}} onPress={()=>{isWifiEnabled()}}>
+        <Button style={{backgroundColor:'#42a5f5',borderWidth:0,elevation:5}} onPress={()=>{isHotspotEnabled()}}>
           <View >
             <Text style={style.buttonText}> IS HOTSPOT ENABLED?</Text>
           </View>
@@ -162,6 +162,30 @@ const Home = () =>{
       }
       function turnOnHotspot(){
         showTurnOnHotspotModal(true);
+      }
+      function turnOffHotspot(){
+        HotspotWizard.turnOffHotspot().then(data=>{
+          if(data.status=="failed"){
+            Toast.show("Failed to turn off hotspot. Note That, this can only turn off hotspot which is started using this library.",Toast.LONG)
+          }
+          if(data.status=="success"){
+            Toast.show("Turned Off Hotspot.")
+          }
+        }).catch(err=>{
+          Toast.show("Something went wrong..")
+        })
+      }
+      function isHotspotEnabled(){
+        HotspotWizard.isHotspotEnabled().then(status=>{
+          if(status){
+            Toast.show("Hotspot Is Enabled")
+          }
+          else
+          {
+            Toast.show("Hotspot Is Disabled")
+
+          }
+        })
       }
 }
 
