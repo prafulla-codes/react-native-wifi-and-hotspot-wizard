@@ -14,17 +14,42 @@
   This library also **automatically deals with run-time permission management**.
 
 
+## Getting Started
+
+Install The Library Using NPM
+
+```shell
+npm install react-native-wifi-and-hotspot-wizard
+```
+
+Link The Library
+
+```shell
+react-native link react-native-wifi-and-hotspot-wizard
+```
+
+### Usage
+
+```javascript
+import {WifiWizard, HotspotWizard} from 'react-native-wifi-and-hotspot-wizard';
+
+// example 
+WifiWizard.turnOnWifi(); // turns on wifi
+HotspotWizard.turnOffhotspot(); // turns off hotspot
+```
+
+**Refer Official Documentation for detailed usage of all the methods :-**
+
 <a href="https://react-native-wifi-and-hotspot-wizard.netlify.app" target="_blank">
 <img 
-height="100"     src="https://res.cloudinary.com/prafulla98/image/upload/v1592631858/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Frame_4get_started_button_fvscwx.png"></a>
+height="50"     src="https://res.cloudinary.com/prafulla98/image/upload/v1592631858/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Frame_4get_started_button_fvscwx.png"></a>
 
-<a href="CONTRIBUTING.md">
+## 😎 CONTRIBUTE
 
-<img 
-height="100"  src="https://res.cloudinary.com/prafulla98/image/upload/v1592633367/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Frame_6contribute_fhvbah.png">
-</p>
-</a>
+Feel free to contribute to this library, any small addition to this is very much appreciated and welcomed :)
 
-# ⏱️ CHANGELOG
+Checkout the [CONTRIBUTION Guidelines](CONTRIBUTION.md) to get started. 
 
-You can find all the changes undergone by this library in [CHANGELOG.md](CHANGELOG.md)
+## ⏱️ CHANGELOG
+
+You can find all the changes made to this library in [CHANGELOG.md](CHANGELOG.md)
