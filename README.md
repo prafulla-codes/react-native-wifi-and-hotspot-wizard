@@ -8,9 +8,8 @@
 <a href="https://www.npmjs.com/package/react-native-wifi-and-hotspot-wizard"><img src="https://img.shields.io/npm/dt/react-native-wifi-and-hotspot-wizard?color=brightgreen&logo=npm&style=for-the-badge&labelColor=black" alt="Downloads"></a>
 </p>
 <pre><img 
-width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593957755/React%20Native%20Wifi%20and%20Hotspot%20Wizard/connectToNetwork_oflsox.gif"></a>    <img 
-width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593957741/React%20Native%20Wifi%20and%20Hotspot%20Wizard/getNearbyNetworks_j2o3pw.gif"></a>   <img 
-width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593957751/React%20Native%20Wifi%20and%20Hotspot%20Wizard/turnOnHotspot_xry50d.gif"></a>
+width="45%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593957755/React%20Native%20Wifi%20and%20Hotspot%20Wizard/connectToNetwork_oflsox.gif"></a>   <img 
+width="45%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593957741/React%20Native%20Wifi%20and%20Hotspot%20Wizard/getNearbyNetworks_j2o3pw.gif"></a> 
 </pre>
 
  ⚙️ Configure both **Wifi and Hotspot** settings using a single library. 
