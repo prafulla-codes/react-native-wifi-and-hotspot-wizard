@@ -183,7 +183,6 @@ const Home = () =>{
           else
           {
             Toast.show("Hotspot Is Disabled")
-
           }
         })
       }
