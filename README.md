@@ -76,4 +76,4 @@ You can start by checking out some of the [Issues](https://github.com/Pika1998/r
 
 You can find all the changes made to this library in [CHANGELOG.md](CHANGELOG.md)
 
-npm
+<a href="https://www.buymeacoffee.com/prafulla98" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;border-radius:10px" ></a>
