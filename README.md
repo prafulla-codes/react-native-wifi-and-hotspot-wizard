@@ -62,6 +62,9 @@ width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593955
 width="30%"     src="https://res.cloudinary.com/prafulla98/image/upload/v1593955605/React%20Native%20Wifi%20and%20Hotspot%20Wizard/Screenshot_2020-07-05-18-50-57-816_com_tq5koi.png"></a>
 
 
+## ⏱️ CHANGELOG
+
+You can find all the changes made to this library in [CHANGELOG.md](CHANGELOG.md)
 
 ## 😎 CONTRIBUTE
 
@@ -72,8 +75,9 @@ Checkout the [CONTRIBUTION Guidelines](CONTRIBUTION.md) to get started.
 
 You can start by checking out some of the [Issues](https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard/issues) in the application.
 
-## ⏱️ CHANGELOG
 
-You can find all the changes made to this library in [CHANGELOG.md](CHANGELOG.md)
+
+
+---
 
 <a href="https://www.buymeacoffee.com/prafulla98" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;border-radius:10px" ></a>
