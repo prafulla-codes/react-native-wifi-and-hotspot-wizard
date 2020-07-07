@@ -80,4 +80,4 @@ You can start by checking out some of the [Issues](https://github.com/Pika1998/r
 
 ---
 
-<a href="https://www.buymeacoffee.com/prafulla98" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;border-radius:10px" ></a>
+<a href="https://www.buymeacoffee.com/prafulla98" target="_blank"><img height="51" width="217" src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;border-radius:10px" ></a>
