@@ -153,6 +153,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
       }
     }
   }
+
   @ReactMethod
   public void turnOnHotspot(String SSID,String Password,Promise promise){
     if(isHotspotEnabled()){
@@ -193,6 +194,10 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
         WifiConfiguration  myConfig =  new WifiConfiguration();
         myConfig.SSID=SSID;
         myConfig.preSharedKey=Password;
+        myConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
+        myConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        myConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+        myConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
         Boolean bool = true;
         Object result;
         try{
