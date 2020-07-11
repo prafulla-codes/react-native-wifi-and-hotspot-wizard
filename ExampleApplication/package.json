@@ -23,7 +23,7 @@
     "react-native-screens": "^2.9.0",
     "react-native-simple-toast": "^1.1.2",
     "react-native-vector-icons": "^7.0.0",
-    "react-native-wifi-and-hotspot-wizard": "^1.0.3-stable"
+    "react-native-wifi-and-hotspot-wizard": "^1.0.4-stable"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
