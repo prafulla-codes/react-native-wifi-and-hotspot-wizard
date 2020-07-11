@@ -1,4 +1,8 @@
 # ⏱️ CHANGELOG
+
+## v1.0.5 (STABLE)
+- Hotspot now turns on with WPA2 security enabled. (Issue : [#4](https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard/issues/4))
+
 ## v1.0.4 (STABLE) [Breaking Changes]
 - **All methods return JavaScript Object instead of stringified javascript. (IMPORTANT)** 
 - Added isReadyForCommunication() method in WifiWizard

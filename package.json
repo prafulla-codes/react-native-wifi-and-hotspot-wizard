@@ -1,12 +1,11 @@
 {
-  "name": "@pika1998/react-native-wifi-and-hotspot-wizard",
-  "version": "1.0.4-stable",
+  "name": "react-native-wifi-and-hotspot-wizard",
+  "version": "1.0.5-stable",
   "description": "Configure essential wifi and hotspot settings easily.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "keywords": [
     "react-native-wifi",
     "react-native-hotspot",
