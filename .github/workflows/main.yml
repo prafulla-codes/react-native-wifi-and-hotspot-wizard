@@ -21,5 +21,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Build with Gradle
+      - name: Checkout android folder
+        run: cd android
+      - name: Build the project
         run: ./gradlew build
