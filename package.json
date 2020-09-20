@@ -1,6 +1,6 @@
 {
   "name": "react-native-wifi-and-hotspot-wizard",
-  "version": "1.0.5-stable",
+  "version": "1.0.6-beta.1",
   "description": "Configure essential wifi and hotspot settings easily.",
   "main": "index.js",
   "scripts": {
@@ -19,9 +19,9 @@
   "peerDependencies": {
     "react-native": "^0.41.2"
   },
-  "homepage":"https://react-native-wifi-and-hotspot-wizard.netlify.app/",
+  "homepage": "https://react-native-wifi-and-hotspot-wizard.netlify.app/",
   "repository": {
-  "type": "git",
-  "url": "https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard.git"
+    "type": "git",
+    "url": "https://github.com/Pika1998/react-native-wifi-and-hotspot-wizard.git"
   }
 }
