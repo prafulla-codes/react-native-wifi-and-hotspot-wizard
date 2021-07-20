@@ -25,7 +25,7 @@ import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
 import android.net.wifi.ScanResult;
 import android.widget.Toast;
-import sun.security.ec.point.ProjectivePoint.Mutable;
+# import sun.security.ec.point.ProjectivePoint.Mutable;
 import android.os.Build;
 import java.net.Inet4Address;
 import android.net.wifi.WifiManager.LocalOnlyHotspotReservation;
