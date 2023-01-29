@@ -1,46 +1,39 @@
 package com.reactnativewifiandhotspotwizard;
 
-import com.facebook.react.bridge.*;
-import java.lang.Object;
-import androidx.core.content.ContextCompat;
-import android.util.Log;
-import org.json.*;
-import android.app.Activity;
-import android.content.ComponentName;
-import android.net.Uri;
+import android.Manifest;
 import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
-import android.os.Bundle;
-import android.provider.Settings;
-import java.lang.reflect.Method;
-import 	android.net.NetworkInfo;
-import java.lang.Exception;
-import android.net.ConnectivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.Manifest;
-import android.content.pm.ActivityInfo;
-import android.net.wifi.WifiConfiguration;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.wifi.WifiManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
-import android.widget.Toast;
-import sun.security.ec.point.ProjectivePoint.Mutable;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Build;
-import java.net.Inet4Address;
-import android.net.wifi.WifiManager.LocalOnlyHotspotReservation;
+import android.provider.Settings;
+
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import java.net.InetAddress;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
+import androidx.core.content.ContextCompat;
+
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import javax.security.auth.callback.Callback;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.SupplicantState;
 public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
   WifiManager wifi;
+  WifiNetworkSpecifier wifiNetworkSpecifier;
   private final ReactApplicationContext reactContext;
   public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
   final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 1;
@@ -99,7 +92,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 				Uri.parse("package:" + getReactApplicationContext().getPackageName()));
 		getReactApplicationContext().startActivityForResult(intent, PERMISSIONS_WRITE_SETTINGS, null);
   }
-  
+
   public Boolean isHotspotEnabled(){
     if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
       try{
@@ -126,7 +119,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
       }
     }
   }
-  @ReactMethod 
+  @ReactMethod
   public void isHotspotEnabled(Promise promise){
     if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
       try{
@@ -159,6 +152,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
     if(isHotspotEnabled()){
       turnOffHotspot();
     }
+    // STEP 1 - ADD PERMISSIONS TO GET THIS ACTION
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
       int permissionAccessFineLocation = ContextCompat.checkSelfPermission(getReactApplicationContext(),Manifest.permission.ACCESS_FINE_LOCATION);
       int permissionAccessCoarseLocation = ContextCompat.checkSelfPermission(getReactApplicationContext(),Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -177,11 +171,15 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
         ActivityCompat.requestPermissions(getCurrentActivity(),listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
       }
     }
-    if(!Settings.System.canWrite(getReactApplicationContext()))
-    {
-      writePermission();
+    // STEP 2-  GET WRITE PERMISSIONS (ONLY REQUIRED FOR API > 23 )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      if(!Settings.System.canWrite(getReactApplicationContext()))
+      {
+        writePermission();
+      }
     }
-    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+    // STEP 3
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
         try{
           Method getWifiApConfiguration = wifi.getClass().getDeclaredMethod("getWifiApConfiguration");
           Object result = getWifiApConfiguration.invoke(wifi);
@@ -220,7 +218,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
       {
         wifi.startLocalOnlyHotspot(new LocalOnlyHotspotCallback(promise,SSID,Password),null);
       }
-  
+
   }
 
   public void turnOffHotspot(){
@@ -282,13 +280,14 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
         {
           try{
             JSONObject obj = new JSONObject();
-          }catch(Exception e){  
+          }catch(Exception e){
           }
         }
       }
   }
   @ReactMethod
   public void turnOffHotspot(Promise promise){
+    // STEP 1 - Getting Permissions to grant this operation
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
       int permissionAccessFineLocation = ContextCompat.checkSelfPermission(getReactApplicationContext(),Manifest.permission.ACCESS_FINE_LOCATION);
       int permissionAccessCoarseLocation = ContextCompat.checkSelfPermission(getReactApplicationContext(),Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -307,11 +306,14 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
         ActivityCompat.requestPermissions(getCurrentActivity(),listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),REQUEST_ID_MULTIPLE_PERMISSIONS);
       }
     }
-    if(!Settings.System.canWrite(getReactApplicationContext()))
-    {
-      writePermission();
+    // STEP 2 - Getting Write Permissions
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      if(!Settings.System.canWrite(getReactApplicationContext()))
+      {
+        writePermission();
+      }
     }
-    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
         WifiConfiguration  myConfig =  mWifiConfiguration;
         Boolean bool = false;
         Object restoreConfigResult,result;
@@ -359,9 +361,10 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
         }
       }
   }
- 
+
+  @RequiresApi(api = Build.VERSION_CODES.O)
   public class LocalOnlyHotspotCallback extends WifiManager.LocalOnlyHotspotCallback{
-    Promise promise;    
+    Promise promise;
     String SSID,Password;
     WifiConfiguration config;
     LocalOnlyHotspotCallback(Promise promise,String SSID,String Password){
@@ -405,7 +408,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
     }catch(Exception e){
       promise.reject(e.getMessage());
     }
-   
+
   }
   // Connects to an SSID.
   @ReactMethod
@@ -440,7 +443,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 
     // Quote ssid and password
 		conf.SSID = String.format("\"%s\"", ssid);
-	
+
     WifiConfiguration tempConfig = this.IsExist(conf.SSID);
 		if (tempConfig != null) {
 			wifi.removeNetwork(tempConfig.networkId);
@@ -451,11 +454,11 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
     }catch(Exception e){
       promise.reject(e.getMessage());
     }
-		
+
     	// appropriate ciper is need to set according to security type used
 		if (capabilities.contains("WPA") || capabilities.contains("WPA2") || capabilities.contains("WPA/WPA2 PSK")) {
 
-			// This is needed for WPA/WPA2 
+			// This is needed for WPA/WPA2
 			// Reference - https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/wifi/java/android/net/wifi/WifiConfiguration.java#149
 			conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
 
@@ -471,7 +474,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
 			conf.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
 			conf.status = WifiConfiguration.Status.ENABLED;
 			conf.preSharedKey = String.format("\"%s\"", password);
-      
+
 		} else if (capabilities.contains("WEP")) {
 			// This is needed for WEP
 			// Reference - https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/wifi/java/android/net/wifi/WifiConfiguration.java#149
