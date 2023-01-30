@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
@@ -15,7 +18,9 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Build;
 import android.provider.Settings;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -362,6 +367,7 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
       }
   }
 
+
   @RequiresApi(api = Build.VERSION_CODES.O)
   public class LocalOnlyHotspotCallback extends WifiManager.LocalOnlyHotspotCallback{
     Promise promise;
@@ -412,156 +418,196 @@ public class RNWifiAndHotspotWizardModule extends ReactContextBaseJavaModule {
   }
   // Connects to an SSID.
   @ReactMethod
-	public void connectToNetwork(String network,String ssid, String password,Promise promise) {
+	public void connectToNetwork(String network,String ssid, String password,Promise promise,int Band,boolean isLocalOnlyNetwork) {
+       // Latest Functionality
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+         WifiNetworkSpecifier.Builder wifiNetworkSpecifierBuilder = new WifiNetworkSpecifier.Builder();
+         wifiNetworkSpecifierBuilder.setBand(Band);
+         wifiNetworkSpecifierBuilder.setSsid(String.format("\"%s\"", ssid));
+         wifiNetworkSpecifierBuilder.setWpa2Passphrase(password);
+         WifiNetworkSpecifier wifiNetworkSpecifier = wifiNetworkSpecifierBuilder.build();
+         NetworkRequest.Builder networkRequestBuilder = new NetworkRequest.Builder();
+         networkRequestBuilder
+                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                 .setNetworkSpecifier(wifiNetworkSpecifier);
+         if(isLocalOnlyNetwork){
+           networkRequestBuilder.removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+         } else {
+           networkRequestBuilder.addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+         }
 
-    JSONObject networkObj=null;
-    JSONObject message= new JSONObject();
-    try{
-      networkObj = new JSONObject(network);
-    }catch(Exception e){
-      promise.reject(e.getMessage());
-    }
+         NetworkRequest networkRequest = networkRequestBuilder.build();
+         ConnectivityManager connectivityManager = (ConnectivityManager) reactContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+         ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback(){
+           @Override
+           public void onAvailable(@NonNull Network network) {
+             super.onAvailable(network);
+             Toast.makeText(getReactApplicationContext(),"Wifi Network Available",Toast.LENGTH_LONG);
+           }
+           @Override
+           public void onUnavailable() {
+             super.onUnavailable();
+             Toast.makeText(getReactApplicationContext(),"Wifi Network Not Available",Toast.LENGTH_LONG);
 
-    if(networkObj==null){
-      try{
-        message.put("status","not found");
-        promise.resolve(message.toString());
-      }catch(Exception e){
-        promise.reject(e.getMessage());
-      }
-      return;
-    }
-		//Make new configuration
-		WifiConfiguration conf = new WifiConfiguration();
+           }
+         };
+         connectivityManager.requestNetwork(networkRequest,networkCallback);
 
-    	//clear alloweds
-		conf.allowedAuthAlgorithms.clear();
-		conf.allowedGroupCiphers.clear();
-		conf.allowedKeyManagement.clear();
-		conf.allowedPairwiseCiphers.clear();
-		conf.allowedProtocols.clear();
+       }
+       else {
+         JSONObject networkObj=null;
+         JSONObject message= new JSONObject();
+         try{
+           networkObj = new JSONObject(network);
+         }catch(Exception e){
+           promise.reject(e.getMessage());
+         }
 
-    // Quote ssid and password
-		conf.SSID = String.format("\"%s\"", ssid);
+         if(networkObj==null){
+           try{
+             message.put("status","not found");
+             promise.resolve(message.toString());
+           }catch(Exception e){
+             promise.reject(e.getMessage());
+           }
+           return;
+         }
 
-    WifiConfiguration tempConfig = this.IsExist(conf.SSID);
-		if (tempConfig != null) {
-			wifi.removeNetwork(tempConfig.networkId);
-    }
-    String capabilities="";
-    try{
-      capabilities = (String) networkObj.get("capabilities");
-    }catch(Exception e){
-      promise.reject(e.getMessage());
-    }
+         WifiConfiguration conf = new WifiConfiguration();
 
-    	// appropriate ciper is need to set according to security type used
-		if (capabilities.contains("WPA") || capabilities.contains("WPA2") || capabilities.contains("WPA/WPA2 PSK")) {
+         //clear alloweds
+         conf.allowedAuthAlgorithms.clear();
+         conf.allowedGroupCiphers.clear();
+         conf.allowedKeyManagement.clear();
+         conf.allowedPairwiseCiphers.clear();
+         conf.allowedProtocols.clear();
+         // Quote ssid and password
+         conf.SSID = String.format("\"%s\"", ssid);
 
-			// This is needed for WPA/WPA2
-			// Reference - https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/wifi/java/android/net/wifi/WifiConfiguration.java#149
-			conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+         WifiConfiguration tempConfig = this.IsExist(conf.SSID);
+         if (tempConfig != null) {
+           wifi.removeNetwork(tempConfig.networkId);
+         }
+         String capabilities="";
+         try{
+           capabilities = (String) networkObj.get("capabilities");
+         }catch(Exception e){
+           promise.reject(e.getMessage());
+         }
 
-			conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-			conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+         // appropriate ciper is need to set according to security type used
+         if (capabilities.contains("WPA") || capabilities.contains("WPA2") || capabilities.contains("WPA/WPA2 PSK")) {
 
-			conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+           // This is needed for WPA/WPA2
+           // Reference - https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/wifi/java/android/net/wifi/WifiConfiguration.java#149
+           conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
 
-			conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-			conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+           conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+           conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
 
-			conf.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-			conf.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-			conf.status = WifiConfiguration.Status.ENABLED;
-			conf.preSharedKey = String.format("\"%s\"", password);
+           conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
 
-		} else if (capabilities.contains("WEP")) {
-			// This is needed for WEP
-			// Reference - https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/wifi/java/android/net/wifi/WifiConfiguration.java#149
-			conf.wepKeys[0] = "\"" + password + "\"";
-			conf.wepTxKeyIndex = 0;
-			conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
-			conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
-			conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-			conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
-    	} else {
-			conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+           conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+           conf.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+
+           conf.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+           conf.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+           conf.status = WifiConfiguration.Status.ENABLED;
+           conf.preSharedKey = String.format("\"%s\"", password);
+
+         } else if (capabilities.contains("WEP")) {
+           // This is needed for WEP
+           // Reference - https://android.googlesource.com/platform/frameworks/base/+/refs/heads/master/wifi/java/android/net/wifi/WifiConfiguration.java#149
+           conf.wepKeys[0] = "\"" + password + "\"";
+           conf.wepTxKeyIndex = 0;
+           conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+           conf.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
+           conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+           conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+         } else {
+           conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+         }
+
+         List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
+         if (mWifiConfigList == null) {
+           try{
+             message.put("status","failed");
+             promise.resolve(message.toString());
+           }catch(Exception e){
+             promise.reject(e.getMessage());
+           }
+         }
+
+         int updateNetwork = -1;
+
+         // Use the existing network config if exists
+         for (WifiConfiguration wifiConfig : mWifiConfigList) {
+           if (wifiConfig.SSID.equals(conf.SSID)) {
+             conf=wifiConfig;
+             updateNetwork=conf.networkId;
+           }
+         }
+
+         // If network not already in configured networks add new network
+         if ( updateNetwork == -1 ) {
+           updateNetwork = wifi.addNetwork(conf);
+           wifi.saveConfiguration();
+         }
+
+         // if network not added return false
+         if ( updateNetwork == -1 ) {
+           try{
+             message.put("status","failed");
+             promise.resolve(message.toString());
+           }catch(Exception e){
+             promise.reject(e.getMessage());
+           }
+
+         }
+
+         // disconnect current network
+         boolean disconnect = wifi.disconnect();
+         if ( !disconnect ) {
+           try{
+             message.put("status","failed");
+             promise.resolve(message.toString());
+           }catch(Exception e){
+             promise.reject(e.getMessage());
+           }
+         }
+
+         // enable new network
+         boolean enableNetwork = wifi.enableNetwork(updateNetwork, true);
+         if ( !enableNetwork ) {
+           try{
+             message.put("status","failed");
+             promise.resolve(message.toString());
+           }catch(Exception e){
+             promise.reject(e.getMessage());
+           }
+         }
+         try {
+           Thread.sleep(500);
+         } catch (InterruptedException ie) {
+           try{
+             message.put("status","failed");
+             promise.resolve(message.toString());
+           }catch(Exception e){
+             promise.reject(e.getMessage());
+           }
+         }
+         try{
+           message.put("status","connected");
+           promise.resolve(message.toString());
+         }catch(Exception e){
+           promise.reject(e.getMessage());
+         }
+
+
+
 		}
 
-		List<WifiConfiguration> mWifiConfigList = wifi.getConfiguredNetworks();
-		if (mWifiConfigList == null) {
-        try{
-          message.put("status","failed");
-          promise.resolve(message.toString());
-        }catch(Exception e){
-          promise.reject(e.getMessage());
-        }
-        }
 
-		int updateNetwork = -1;
-
-		// Use the existing network config if exists
-		for (WifiConfiguration wifiConfig : mWifiConfigList) {
-			if (wifiConfig.SSID.equals(conf.SSID)) {
-        		conf=wifiConfig;
-				updateNetwork=conf.networkId;
-			}
-		}
-
-		// If network not already in configured networks add new network
-		if ( updateNetwork == -1 ) {
-	      updateNetwork = wifi.addNetwork(conf);
-	      wifi.saveConfiguration();
-		}
-
-    	// if network not added return false
-		if ( updateNetwork == -1 ) {
-      try{
-        message.put("status","failed");
-        promise.resolve(message.toString());
-      }catch(Exception e){
-        promise.reject(e.getMessage());
-      }
-		  
-		}
-
-    	// disconnect current network
-		boolean disconnect = wifi.disconnect();
-		if ( !disconnect ) {
-      try{
-        message.put("status","failed");
-        promise.resolve(message.toString());
-      }catch(Exception e){
-        promise.reject(e.getMessage());
-      }
-		}
-
-   		// enable new network
-		boolean enableNetwork = wifi.enableNetwork(updateNetwork, true);
-		if ( !enableNetwork ) {
-      try{
-        message.put("status","failed");
-        promise.resolve(message.toString());
-      }catch(Exception e){
-        promise.reject(e.getMessage());
-      }
-		}
-    try {
-      Thread.sleep(500);
-    } catch (InterruptedException ie) {
-      try{
-        message.put("status","failed");
-        promise.resolve(message.toString());
-      }catch(Exception e){
-        promise.reject(e.getMessage());
-      }
-    }
-    try{
-      message.put("status","connected");
-      promise.resolve(message.toString());
-    }catch(Exception e){
-      promise.reject(e.getMessage());
-    }
   }
 
   // Check if the SSID is already configured previously
