@@ -5,7 +5,7 @@
  * @format
  */
 
-var packagePath = 'C:\\Projects\\react-native-wifi-and-hotspot-wizard\\'
+var packagePath = 'C:\\Projects\\react-native-wifi-and-hotspot-wizard\\library\\'
 module.exports = {
   watchFolders:[packagePath],
   resolver: {
